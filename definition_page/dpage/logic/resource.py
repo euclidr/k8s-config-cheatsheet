@@ -1,6 +1,7 @@
 #! -*- coding:utf-8 -*-
 from __future__ import annotations
 
+from collections import OrderedDict
 from pathlib import Path
 from typing import List, Optional
 
@@ -8,7 +9,7 @@ from typing import List, Optional
 class Resources(object):
 
     def __init__(self, version: str):
-        self.name_mapper = {}
+        self.name_mapper = OrderedDict()
         self.kind_mapper = {}
         self.short_mapper = {}
         self._load_resources(version)
@@ -28,6 +29,9 @@ class Resources(object):
                     self.add(resource)
 
         return self
+
+    def items(self):
+        return self.name_mapper.values()
 
     def add(self, res: Resource):
         self.name_mapper[res.name] = res

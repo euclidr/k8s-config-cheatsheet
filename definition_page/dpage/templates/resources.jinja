@@ -1,0 +1,38 @@
+{% extends "master.jinja" %}
+
+{% block title %}
+  Kubernetes v{{version}} Resources
+{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="main">
+  <div class="content">
+    <h3>Kubernetes v{{version}} Resources</h3>
+    <table>
+      <thead>
+        <tr>
+         <td>NAME</td>
+         <td>SHORTNAMES</td>
+         <td>APIGROUP</td>
+         <td>NAMESPACED</td>
+         <td>KIND</td>
+        </tr>
+      </thead>
+      <tbody>
+        {% for resource in resources %}
+        <tr>
+          <td>{{resource.name}}</td>
+          <td>{{resource.short_names}}</td>
+          <td>{{resource.api_group}}</td>
+          <td>{{resource.namespaced}}</td>
+          <td>{{resource.kind}}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

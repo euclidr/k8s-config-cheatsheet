@@ -8,9 +8,24 @@ import logging
 from collections import OrderedDict
 from pathlib import Path
 from typing import List, Dict, Optional
-from resource import Resources
+from .resource import Resources
 
 logger = logging.getLogger("data.apidoc")
+
+_doc_store = {}
+
+def get_doc(version: str) -> ApiDoc:
+    doc = _doc_store.get(version)
+    if doc:
+        return doc
+
+    try:
+        doc = ApiDoc(version)
+    except FileNotFoundError as e:
+        return None
+
+    return doc
+
 
 class ApiDoc(object):
 
@@ -238,7 +253,7 @@ class DefItem(object):
 if __name__ == '__main__':
     doc = ApiDoc('1.13.7')
     rqs = doc.fetch('io.k8s.api.core.v1.ResourceQuotaStatus')
-    item = doc.search('po.metadata')
+    item = doc.search('deploy.spec.template.spec.containers.item')
     print(item.description)
     # print(item.ref_link)
     # print(item.ref)

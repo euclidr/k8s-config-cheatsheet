@@ -1,0 +1,19 @@
+{% extends "master.jinja" %}
+
+{% block title %}
+  Choose Kubernetes Versions
+{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="main">
+  <div class="content">
+    <h3>Choose version of Kubernetes</h3>
+    {% for ver in vers %}
+    <p><a href="{{ url_for('resource.index', ver=ver) }}">{{ver}}</a></p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
