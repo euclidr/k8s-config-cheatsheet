@@ -5,4 +5,3 @@ kubectl api-resources
 
 # List all api versions the cluster supports
 kubectl api-versions
-

@@ -89,10 +89,15 @@ class DefItem(object):
         if not path:
             return self
 
-        if self.type != 'object':
+        if self.type != 'object' and self.type != 'array':
             return None
 
         root = path.split('.')[0]
+        if self.type == 'array':
+            if root != 'item':
+                return None
+            return self.array_item
+
         item = self.properties.get(root)
         if not item:
             return None
