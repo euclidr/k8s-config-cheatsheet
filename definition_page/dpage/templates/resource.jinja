@@ -1,0 +1,60 @@
+{% extends "master.jinja" %}
+
+{% block title %}
+  {{kind}} - Kubernetes v{{version}}
+{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="main">
+  <div class="content">
+    <h3>{{rpath}}<sub>{{kind}}</sub></h3>
+    <p>{{item.type}}</p>
+    <p>{{item.description}}</p>
+    <hr/>
+    {% if item.type == 'object' %}
+      <ul>
+        {% for name, item in item.properties.items() %}
+        <li>
+          <a href="#TODO">{{name}}</a>
+          <p>{{item.description}}</p>
+        </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% if item.type == 'array' %}
+      <ul>
+        <li>
+          <a href="#TODO">item</a>
+        </li>
+      </ul>
+    {% endif %}
+  </div>
+  <div class="aside">
+    {% if upper_item %}
+      <p>{{upper_name}}</p>
+      <p>{{upper_item.type}}</p>
+      {% if upper_item.type == 'object'%}
+      <ul>
+        {% for name, item in upper_item.properties.items() %}
+          <li>
+            <a href="#TODO">{{name}}</a>
+          </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% if upper_item.type == 'array'%}
+      <ul>
+        <li>
+          <a href="#TODO">item</a>
+        </li>
+      </ul>
+      {% endif %}
+    {% else %}
+    {% endif %}
+    <!-- TODO resources -->
+  </div>
+</div>
+{% endblock %}

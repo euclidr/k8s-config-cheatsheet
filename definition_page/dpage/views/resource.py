@@ -26,14 +26,28 @@ def doc(ver, rpath):
     if not item:
         abort(404)
 
+    kind = doc.get_root_kind(rpath)
+    item_name = kind
+
+    if len(rpath.split('.')) > 1:
+        item_name = rpath.split('.')[-1]
+
     upper_item = None
+    upper_name = None
+    if len(rpath.split('.')) == 2:
+        upper_name = kind
     if len(rpath.split('.')) > 2:
+        upper_name = rpath.split('.')[-2]
         upper_item = doc.search('.'.join(rpath.split('.')[:-1]))
 
     ctx = {
         'version': ver,
+        'rpath': rpath,
+        'kind': kind,
         'item': item,
+        'item_name': item_name,
         'upper_item': upper_item,
+        'upper_name': upper_name,
         'resources': doc.resources.items()
     }
 

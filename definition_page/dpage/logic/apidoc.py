@@ -64,6 +64,13 @@ class ApiDoc(object):
 
         return root_item.search(parts[1])
 
+    def get_root_kind(self, path: str) -> Optional[str]:
+        root = path.split('.')[0]
+        res = self.resources.get(root)
+        if not res:
+            return None
+        return res.kind
+
     def find_root_key(self, root: str) -> Optional[str]:
         res = self.resources.get(root)
         if not res:
