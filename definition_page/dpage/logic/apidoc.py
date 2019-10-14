@@ -3,6 +3,7 @@
 # https://stackoverflow.com/questions/15853469/putting-current-class-as-return-type-annotation
 from __future__ import annotations
 
+import re
 import json
 import logging
 from collections import OrderedDict
@@ -13,6 +14,7 @@ from .resource import Resources
 logger = logging.getLogger("data.apidoc")
 
 _doc_store = {}
+
 
 def get_doc(version: str) -> ApiDoc:
     doc = _doc_store.get(version)
@@ -114,17 +116,19 @@ class DefItem(object):
         if self.type != 'object' and self.type != 'array':
             return None
 
-        root = path.split('.')[0]
+        parts = path.split('.', maxsplit=1)
+        root = parts[0]
         if self.type == 'array':
             if root != 'item':
                 return None
-            return self.array_item
+            if len(parts) == 1:
+                return self.array_item
+            return self.array_item.search(parts[1])
 
         item = self.properties.get(root)
         if not item:
             return None
 
-        parts = path.split('.', maxsplit=1)
         if len(parts) == 1:
             return item
 
@@ -204,6 +208,10 @@ class DefItem(object):
         return ''
 
     @property
+    def description_parsed(self) -> str:
+        return re.sub(r'(https?://[^\s]+)', r'<a href="\1" target="_blank">\1</a>', self.description)
+
+    @property
     def type(self) -> str:
         if self._type:
             return self._type
@@ -224,7 +232,7 @@ class DefItem(object):
 
         if self.ref:
             return self.ref.properties
-        
+
         return self._properties
 
     @property

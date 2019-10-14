@@ -5,56 +5,128 @@
 {% endblock %}
 
 {% block head %}
+<style>
+body {
+  font-family: monospace, sans-serif;
+}
+
+.page {
+  padding-top: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.container {
+  padding: 1em;
+}
+
+.content {
+  float: right;
+  width: 75%;
+}
+
+.aside {
+  background-color: #F1F1F1;
+  width: 25%;
+}
+
+ul {
+  list-style-type: none;
+  padding-inline-start: 0;
+}
+
+.aside ul {
+  padding-inline-start: 0.3em;
+  padding-inline-end: 0.3em;
+}
+
+.aside li {
+  word-wrap: break-word;
+  margin-block-end: 0.5em;
+}
+
+.aside-group {
+  word-wrap: break-word;
+  background: lightgray;
+  padding: 0.3em;
+}
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="main">
-  <div class="content">
-    <h3>{{rpath}}<sub>{{kind}}</sub></h3>
-    <p>{{item.type}}</p>
-    <p>{{item.description}}</p>
-    <hr/>
-    {% if item.type == 'object' %}
-      <ul>
-        {% for name, item in item.properties.items() %}
-        <li>
-          <a href="#TODO">{{name}}</a>
-          <p>{{item.description}}</p>
-        </li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-    {% if item.type == 'array' %}
-      <ul>
-        <li>
-          <a href="#TODO">item</a>
-        </li>
-      </ul>
-    {% endif %}
-  </div>
-  <div class="aside">
-    {% if upper_item %}
-      <p>{{upper_name}}</p>
-      <p>{{upper_item.type}}</p>
-      {% if upper_item.type == 'object'%}
-      <ul>
-        {% for name, item in upper_item.properties.items() %}
-          <li>
-            <a href="#TODO">{{name}}</a>
-          </li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-      {% if upper_item.type == 'array'%}
-      <ul>
-        <li>
-          <a href="#TODO">item</a>
-        </li>
-      </ul>
-      {% endif %}
-    {% else %}
-    {% endif %}
-    <!-- TODO resources -->
+  <div class="page">
+    <div class="content">
+      <div class="container">
+        <h3>[{{kind}}] - {{rpath}}</h3>
+        <p>{{item.type}}</p>
+        <p>{{item.description_parsed}}</p>
+        <hr/>
+        {% if item.type == 'object' %}
+          <!-- Object properties definition-->
+          <ul>
+            {% for name, item in item.properties.items() %}
+            <li>
+              {% if item.type == 'object' or item.type == 'array' %}
+              <a href="{{url_for('resource.doc', ver=version, rpath=rpath+'.'+name)}}"><strong>{{name}}</strong></a> [{{item.type}}]
+              {% else %}
+                <strong>{{name}}</strong> [{{item.type}}]
+              {% endif %}
+              <p>{{item.description_parsed}}</p>
+            </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        {% if item.type == 'array' %}
+          <!-- Array item definition -->
+          <ul>
+            <li>
+              <a href="{{url_for('resource.doc', ver=version, rpath=rpath+'.item')}}">item</a>
+            </li>
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="aside">
+      <div class="container">
+        {% if upper_item %}
+          <p><a href="{{url_for('resource.index', ver=version)}}">Resources</a></p>
+          <p class="aside-group">Upper Level<p>
+          <p><a href="{{url_for('resource.doc', ver=version, rpath=upper_rpath)}}">{{upper_name}}</a></p>
+          <p class="aside-group">Siblings</p>
+          {% if upper_item.type == 'object'%}
+          <ul>
+            {% for name, item in upper_item.properties.items() %}
+              <li>
+                <a href="{{url_for('resource.doc', ver=version, rpath=upper_rpath+'.'+name)}}">{{name}}</a>
+              </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+          {% if upper_item.type == 'array'%}
+          <ul>
+            <li>
+              <a href="{{url_for('resource.doc', ver=version, rpath=upper_rpath+'.item')}}">item</a>
+            </li>
+          </ul>
+          {% endif %}
+        {% else %}
+          <!-- resources -->
+          <p><a href="{{url_for('resource.index', ver=version)}}">Resources</a></p>
+          {% for group, resources in res_groups.items() %}
+            <p class="aside-group">{{group}}</p>
+            <ul>
+              {% for resource in resources %}
+              <li>
+                  <a href="{{url_for('resource.doc', ver=version, rpath=resource.name)}}">{{resource.kind}}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

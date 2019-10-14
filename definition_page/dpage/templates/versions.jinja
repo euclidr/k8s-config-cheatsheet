@@ -5,12 +5,21 @@
 {% endblock %}
 
 {% block head %}
+<style>
+body {
+  font-family: monospace, sans-serif;
+}
+
+.page {
+  text-align: center;
+}
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="main">
-  <div class="content">
-    <h3>Choose version of Kubernetes</h3>
+  <div class="page">
+    <h3>Choose Kubernetes version</h3>
     {% for ver in vers %}
     <p><a href="{{ url_for('resource.index', ver=ver) }}">{{ver}}</a></p>
     {% endfor %}

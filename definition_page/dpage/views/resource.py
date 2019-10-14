@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+from collections import OrderedDict
 from flask import Blueprint, render_template, abort
 from dpage.logic.apidoc import get_doc
 
@@ -23,6 +24,7 @@ def doc(ver, rpath):
         abort(404)
 
     item = doc.search(rpath)
+    print(item)
     if not item:
         abort(404)
 
@@ -34,11 +36,22 @@ def doc(ver, rpath):
 
     upper_item = None
     upper_name = None
+    upper_rpath = None
+    if len(rpath.split('.')) >= 2:
+        upper_name = rpath.split('.')[-2]
+        upper_rpath = '.'.join(rpath.split('.')[:-1])
+        upper_item = doc.search('.'.join(rpath.split('.')[:-1]))
+
     if len(rpath.split('.')) == 2:
         upper_name = kind
-    if len(rpath.split('.')) > 2:
-        upper_name = rpath.split('.')[-2]
-        upper_item = doc.search('.'.join(rpath.split('.')[:-1]))
+
+    resources = doc.resources.items()
+    res_groups = OrderedDict()
+    for r in resources:
+        if r.api_group in res_groups:
+            res_groups[r.api_group].append(r)
+        else:
+            res_groups[r.api_group] = [r]
 
     ctx = {
         'version': ver,
@@ -48,7 +61,8 @@ def doc(ver, rpath):
         'item_name': item_name,
         'upper_item': upper_item,
         'upper_name': upper_name,
-        'resources': doc.resources.items()
+        'upper_rpath': upper_rpath,
+        'res_groups': res_groups,
     }
 
     return render_template('resource.jinja', **ctx)

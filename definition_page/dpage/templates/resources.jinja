@@ -5,11 +5,33 @@
 {% endblock %}
 
 {% block head %}
+<style>
+body {
+  font-family: monospace, sans-serif;
+}
+
+.page {
+  text-align: center;
+}
+
+table {
+  margin: auto;
+}
+
+thead {background: lightgray}
+
+tr:nth-child(even) {background: #F1F1F1}
+
+td {
+  line-height: 1.6em;
+}
+
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="main">
-  <div class="content">
+  <div class="page">
     <h3>Kubernetes v{{version}} Resources</h3>
     <table>
       <thead>
@@ -24,7 +46,7 @@
       <tbody>
         {% for resource in resources %}
         <tr>
-          <td>{{resource.name}}</td>
+          <td><a href="{{url_for('resource.doc', ver=version, rpath=resource.name)}}">{{resource.name}}</a></td>
           <td>{{resource.short_names}}</td>
           <td>{{resource.api_group}}</td>
           <td>{{resource.namespaced}}</td>
