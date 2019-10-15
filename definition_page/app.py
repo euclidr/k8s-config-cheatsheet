@@ -6,7 +6,6 @@ from dpage import views
 
 
 def create_app(debug=True):
-    print(__name__)
     _app = Flask(__name__, template_folder='dpage/templates', static_folder='dpage/static')
     _app.debug = debug
     _app.config.from_object('settings')

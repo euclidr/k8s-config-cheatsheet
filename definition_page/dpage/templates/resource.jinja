@@ -73,10 +73,11 @@ ul {
             {% for name, subitem in item.properties.items() %}
             <li>
               {% if subitem.type == 'object' or subitem.type == 'array' %}
-              <a href="{{url_for('resource.doc', ver=version, rpath=rpath+'.'+name)}}"><strong>{{name}}</strong></a> [{{item.type}}]
+                <a href="{{url_for('resource.doc', ver=version, rpath=rpath+'.'+name)}}"><strong>{{name}}</strong></a> [{{item.type}}]
+                {% if name in item.required %}[<strong>REQUIRED</strong>]{% endif %}
               {% else %}
                 <strong>{{name}}</strong> [{{subitem.type}}]
-                {% if name in item.required %}[Required]{% endif %}
+                {% if name in item.required %}[<strong>REQUIRED</strong>]{% endif %}
               {% endif %}
               <p>{{subitem.description_parsed}}</p>
             </li>

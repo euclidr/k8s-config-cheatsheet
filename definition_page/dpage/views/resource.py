@@ -23,6 +23,7 @@ def doc(ver, rpath):
     if not doc:
         abort(404)
 
+    # check if name is ambiguous
     first_part = rpath.split('.')[0]
     if doc.resources.is_name_ambiguous(first_part):
         choices = doc.resources.resources_by_name(first_part)
@@ -38,7 +39,6 @@ def doc(ver, rpath):
         return render_template('ambiguous_resources.jinja', **ctx)
 
     item = doc.search(rpath)
-    print(item)
     if not item:
         abort(404)
 

@@ -22,7 +22,6 @@ class Resources(object):
         with path.open() as f:
             head = f.readline()
             col_widths = self._extract_col_widths(head)
-            print(col_widths)
             for l in f:
                 resource = self._extract_resource(l, col_widths)
                 if resource:

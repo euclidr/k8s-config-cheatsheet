@@ -57,7 +57,6 @@ class ApiDoc(object):
         root_key = self.find_root_key(root)
         if not root_key:
             return None
-        print('root_key of {} is {}'.format(path, root_key))
 
         root_item = self.fetch(root_key)
 
@@ -125,6 +124,7 @@ class DefItem(object):
         self._type = ''
         self._ref_link = ''
         self._properties = OrderedDict()
+        self._required = []
 
     def search(self, path: str) -> Optional[DefItem]:
         if not path:
@@ -175,8 +175,6 @@ class DefItem(object):
             return None
 
         item._required = raw.get('required', [])
-        if item._required:
-            print('req', item.required)
 
         ref_link = raw.get('$ref', '')
         if ref_link.startswith('#/definitions/'):
@@ -256,7 +254,11 @@ class DefItem(object):
 
     @property
     def required(self) -> List[str]:
-        return self._required
+        if self._required:
+            return self._required
+        if self.ref:
+            return self.ref.required
+        return []
 
     @property
     def array_item(self):
@@ -294,15 +296,3 @@ if __name__ == '__main__':
     # print(item.ref.properties.keys())
     print(item.properties.keys())
     # print(json.dumps(rqs.to_dict(), indent=4))
-
-# definitions
-#     description
-#     required
-#     properties
-#     type
-#         string
-#         number
-#         boolean
-#         array
-#             items
-#         $ref
