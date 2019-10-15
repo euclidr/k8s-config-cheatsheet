@@ -10,7 +10,7 @@ class Resources(object):
 
     def __init__(self, version: str):
         self.name_mapper = OrderedDict()
-        self.kind_mapper = {}
+        self.kind_mapper = OrderedDict()
         self.short_mapper = {}
         self._load_resources(version)
 
@@ -31,17 +31,42 @@ class Resources(object):
         return self
 
     def items(self):
-        return self.name_mapper.values()
+        return self.kind_mapper.values()
 
     def add(self, res: Resource):
-        self.name_mapper[res.name] = res
+        # res.name maybe duplicated
+        if res.name in self.name_mapper:
+            if isinstance(self.name_mapper[res.name], list):
+                self.name_mapper[res.name].append(res)
+            else:
+                self.name_mapper[res.name] = [self.name_mapper[res.name], res]
+        else:
+            self.name_mapper[res.name] = res
         self.kind_mapper[res.kind] = res
         if res.short_names:
             for short_name in res.short_names.split(','):
                 self.short_mapper[short_name] = res
 
     def get_by_name(self, name: str) -> Optional[Resource]:
-        return self.name_mapper.get(name)
+        '''make sure name is not ambiguous'''
+        result = self.name_mapper.get(name)
+        if not result:
+            return None
+
+        if isinstance(result, list):
+            raise Exception('the resource name is ambiguous')
+        return result
+
+    def is_name_ambiguous(self, name: str) -> bool:
+        return isinstance(self.name_mapper.get(name), list)
+
+    def resources_by_name(self, name: str) -> List[Resource]:
+        result = self.name_mapper.get(name)
+        if not result:
+            return []
+        if isinstance(result, list):
+            return result
+        return [result]
 
     def get_by_short(self, short: str) -> Optional[Resource]:
         return self.short_mapper.get(short)

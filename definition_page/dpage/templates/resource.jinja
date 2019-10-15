@@ -58,21 +58,27 @@ ul {
   <div class="page">
     <div class="content">
       <div class="container">
-        <h3>[{{kind}}] - {{rpath}}</h3>
-        <p>{{item.type}}</p>
+        {% if is_root_resource %}
+          <h3>{{kind}}</h3>
+          <p>version: {{ api_group + '/' + api_version}}</p>
+        {% else %}
+          <h3>[{{kind}}] - {{rpath}}</h3>
+          <p>type: {{item.type}}</p>
+        {% endif %}
         <p>{{item.description_parsed}}</p>
         <hr/>
         {% if item.type == 'object' %}
           <!-- Object properties definition-->
           <ul>
-            {% for name, item in item.properties.items() %}
+            {% for name, subitem in item.properties.items() %}
             <li>
-              {% if item.type == 'object' or item.type == 'array' %}
+              {% if subitem.type == 'object' or subitem.type == 'array' %}
               <a href="{{url_for('resource.doc', ver=version, rpath=rpath+'.'+name)}}"><strong>{{name}}</strong></a> [{{item.type}}]
               {% else %}
-                <strong>{{name}}</strong> [{{item.type}}]
+                <strong>{{name}}</strong> [{{subitem.type}}]
+                {% if name in item.required %}[Required]{% endif %}
               {% endif %}
-              <p>{{item.description_parsed}}</p>
+              <p>{{subitem.description_parsed}}</p>
             </li>
             {% endfor %}
           </ul>

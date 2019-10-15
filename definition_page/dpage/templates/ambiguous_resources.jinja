@@ -1,0 +1,32 @@
+{% extends "master.jinja" %}
+
+{% block title %}
+  Resource name "{{name}}" is ambiguous
+{% endblock %}
+
+{% block head %}
+<style>
+body {
+  font-family: monospace, sans-serif;
+}
+
+.page {
+  text-align: center;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main">
+  <div class="page">
+    <h3>Resource name "{{name}}" is ambiguous, Please choose one</h3>
+    {% for resource in choices %}
+      {% if subseq %}
+        <p><a href="{{ url_for('resource.doc', ver=version, rpath=resource.kind +'.'+ subseq) }}">{{resource.kind}}</a></p>
+      {% else %}
+        <p><a href="{{ url_for('resource.doc', ver=version, rpath=resource.kind) }}">{{resource.kind}}</a></p>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -23,12 +23,29 @@ def doc(ver, rpath):
     if not doc:
         abort(404)
 
+    first_part = rpath.split('.')[0]
+    if doc.resources.is_name_ambiguous(first_part):
+        choices = doc.resources.resources_by_name(first_part)
+        subseq = ''
+        if len(rpath.split('.')) > 1:
+            subseq = '.'.join(rpath.split('.')[1:])
+        ctx = dict(
+            version=ver,
+            name=first_part,
+            subseq=subseq,
+            choices=choices,
+        )
+        return render_template('ambiguous_resources.jinja', **ctx)
+
     item = doc.search(rpath)
     print(item)
     if not item:
         abort(404)
 
+    is_root_resource = len(rpath.split('.')) == 1
     kind = doc.get_root_kind(rpath)
+    api_group = doc.get_root_group(rpath)
+    api_version = doc.get_root_version(rpath)
     item_name = kind
 
     if len(rpath.split('.')) > 1:
@@ -56,7 +73,10 @@ def doc(ver, rpath):
     ctx = {
         'version': ver,
         'rpath': rpath,
+        'is_root_resource': is_root_resource,
         'kind': kind,
+        'api_group': api_group,
+        'api_version': api_version,
         'item': item,
         'item_name': item_name,
         'upper_item': upper_item,

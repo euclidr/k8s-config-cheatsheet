@@ -52,6 +52,7 @@ class ApiDoc(object):
         self.storage[key] = value
 
     def search(self, path: str) -> Optional[DefItem]:
+        '''path must not be ambiguous'''
         root = path.split('.')[0]
         root_key = self.find_root_key(root)
         if not root_key:
@@ -73,6 +74,21 @@ class ApiDoc(object):
             return None
         return res.kind
 
+    def get_root_group(self, path: str) -> Optional[str]:
+        root = path.split('.')[0]
+        res = self.resources.get(root)
+        if not res:
+            return None
+        return res.api_group
+
+    def get_root_version(self, path: str) -> Optional[str]:
+        root = path.split('.')[0]
+        root_key = self.find_root_key(root)
+        if not root_key:
+            return None
+
+        return root_key.split('.')[-2]
+
     def find_root_key(self, root: str) -> Optional[str]:
         res = self.resources.get(root)
         if not res:
@@ -86,7 +102,8 @@ class ApiDoc(object):
             for candidate in candidates:
                 if candidate.split('.')[-2] == v:
                     return candidate
-        return candidates[0]
+        if candidates:
+            return candidates[0]
 
     def _load_doc(self, version: str):
         path = Path('data/{}/swagger.json'.format(version))
@@ -158,6 +175,8 @@ class DefItem(object):
             return None
 
         item._required = raw.get('required', [])
+        if item._required:
+            print('req', item.required)
 
         ref_link = raw.get('$ref', '')
         if ref_link.startswith('#/definitions/'):
