@@ -86,7 +86,7 @@ class Resources(object):
     #     return [result]
 
     def resources_by_key(self, key: str) -> List[Resource]:
-        if Resources.is_key_an_id(key):
+        if Resource.is_key_an_id(key):
             r = self.id_mapper.get(key)
             return [r] if r else []
         if Resource.is_key_a_kind(key):
