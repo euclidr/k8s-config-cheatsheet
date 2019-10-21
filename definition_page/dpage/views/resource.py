@@ -25,8 +25,8 @@ def doc(ver, rpath):
 
     # check if name is ambiguous
     first_part = rpath.split('.')[0]
-    if doc.resources.is_name_ambiguous(first_part):
-        choices = doc.resources.resources_by_name(first_part)
+    if doc.resources.is_ambiguous(first_part):
+        choices = doc.resources.resources_by_key(first_part)
         subseq = ''
         if len(rpath.split('.')) > 1:
             subseq = '.'.join(rpath.split('.')[1:])
@@ -42,6 +42,9 @@ def doc(ver, rpath):
     if not item:
         abort(404)
 
+    root_resource = doc.resources.get(first_part)
+
+    rpath = '.'.join([root_resource.id] + rpath.split('.')[1:])
     is_root_resource = len(rpath.split('.')) == 1
     kind = doc.get_root_kind(rpath)
     api_group = doc.get_root_group(rpath)

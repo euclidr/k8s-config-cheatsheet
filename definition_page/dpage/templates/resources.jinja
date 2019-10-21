@@ -46,7 +46,7 @@ td {
       <tbody>
         {% for resource in resources %}
         <tr>
-          <td><a href="{{url_for('resource.doc', ver=version, rpath=resource.kind)}}">{{resource.name}}</a></td>
+          <td><a href="{{url_for('resource.doc', ver=version, rpath=resource.id)}}">{{resource.name}}</a></td>
           <td>{{resource.short_names}}</td>
           <td>{{resource.api_group}}</td>
           <td>{{resource.namespaced}}</td>

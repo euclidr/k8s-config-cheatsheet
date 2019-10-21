@@ -22,9 +22,9 @@ body {
     <h3>Resource name "{{name}}" is ambiguous, Please choose one</h3>
     {% for resource in choices %}
       {% if subseq %}
-        <p><a href="{{ url_for('resource.doc', ver=version, rpath=resource.kind +'.'+ subseq) }}">{{resource.kind}}</a></p>
+        <p><a href="{{ url_for('resource.doc', ver=version, rpath=resource.id +'.'+ subseq) }}">{{resource.kind}}</a></p>
       {% else %}
-        <p><a href="{{ url_for('resource.doc', ver=version, rpath=resource.kind) }}">{{resource.kind}}</a></p>
+        <p><a href="{{ url_for('resource.doc', ver=version, rpath=resource.id) }}">{{resource.kind}}</a></p>
       {% endif %}
     {% endfor %}
   </div>
